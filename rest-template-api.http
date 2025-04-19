@@ -1,0 +1,81 @@
+### REST Template API Test File
+### This file contains HTTP requests to test the REST Template API
+### You can use this file with REST Client extensions in VS Code or IntelliJ IDEA
+
+@baseUrl = http://localhost:8080
+@contentType = application/json
+
+### Get all users
+GET {{baseUrl}}/api/users
+Accept: {{contentType}}
+
+### Get user by ID
+GET {{baseUrl}}/api/users/1
+Accept: {{contentType}}
+
+### Create a new user
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "username": "johndoe",
+  "email": "john.doe@example.com",
+  "password": "securepassword123"
+}
+
+### Update an existing user
+PUT {{baseUrl}}/api/users/2
+Content-Type: {{contentType}}
+
+{
+  "username": "johndoe_updated",
+  "email": "john.updated@example.com",
+  "password": "newsecurepassword456"
+}
+
+### Delete a user
+DELETE {{baseUrl}}/api/users/1
+Accept: {{contentType}}
+
+### Create a test user
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "username": "testuser",
+  "email": "test.user@example.com",
+  "password": "testpassword123"
+}
+
+### Create another test user
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "username": "anotheruser",
+  "email": "another.user@example.com",
+  "password": "anotherpassword456"
+}
+
+### Test Email Uniqueness - Try to create a user with an existing email
+### This should return a 409 Conflict response
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "username": "duplicateuser",
+  "email": "john.doe@example.com",
+  "password": "duplicatepassword789"
+}
+
+### Test Email Uniqueness on Update - Try to update a user with an existing email
+### This should return a 409 Conflict response
+### Note: Replace '2' with an actual user ID that exists in your database
+PUT {{baseUrl}}/api/users/2
+Content-Type: {{contentType}}
+
+{
+  "username": "updateduser",
+  "email": "john.doe@example.com",
+  "password": "updatedpassword123"
+}
