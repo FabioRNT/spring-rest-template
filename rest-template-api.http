@@ -10,7 +10,7 @@ GET {{baseUrl}}/api/users
 Accept: {{contentType}}
 
 ### Get user by ID
-GET {{baseUrl}}/api/users/1
+GET {{baseUrl}}/api/users/2
 Accept: {{contentType}}
 
 ### Create a new user

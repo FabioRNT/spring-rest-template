@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 public class ApiResponse<T>
 {
     private T data;
-    private Link[] links;
     private HttpStatus status;
     @Builder.Default
     private LocalDateTime timestamp = LocalDateTime.now();

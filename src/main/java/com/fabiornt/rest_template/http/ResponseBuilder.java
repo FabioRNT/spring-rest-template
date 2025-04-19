@@ -7,10 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class ResponseBuilder {
-    
+
     /**
      * Creates a success response with data and links
-     * 
+     *
      * @param <T> Type of the data
      * @param data The data to include in the response
      * @param links HATEOAS links to include
@@ -21,33 +21,30 @@ public class ResponseBuilder {
             ApiResponse.<T>builder()
                 .data(data)
                 .status(HttpStatus.OK)
-                .links(links)
                 .build()
         );
     }
-    
+
     /**
-     * Creates a success response with data, status, and links
-     * 
+     * Creates a success response with data only (no additional links)
+     * Used when the data model already contains links
+     *
      * @param <T> Type of the data
      * @param data The data to include in the response
-     * @param status HTTP status code
-     * @param links HATEOAS links to include
      * @return ResponseEntity with ApiResponse
      */
-    public static <T> ResponseEntity<ApiResponse<T>> success(T data, HttpStatus status, Link... links) {
-        return ResponseEntity.status(status).body(
+    public static <T> ResponseEntity<ApiResponse<T>> success(T data) {
+        return ResponseEntity.ok(
             ApiResponse.<T>builder()
                 .data(data)
-                .status(status)
-                .links(links)
+                .status(HttpStatus.OK)
                 .build()
         );
     }
-    
+
     /**
      * Creates a success response with a collection of data and links
-     * 
+     *
      * @param <T> Type of the data
      * @param data The collection of data to include in the response
      * @param links HATEOAS links to include
@@ -62,10 +59,27 @@ public class ResponseBuilder {
                 .build()
         );
     }
-    
+
+    /**
+     * Creates a success response with a collection of data only (no additional links)
+     * Used when the data models already contain links
+     *
+     * @param <T> Type of the data
+     * @param data The collection of data to include in the response
+     * @return ResponseEntity with ApiResponseCollection
+     */
+    public static <T> ResponseEntity<ApiResponseCollection<T>> collection(List<T> data) {
+        return ResponseEntity.ok(
+            ApiResponseCollection.<T>builder()
+                .data(data)
+                .status(HttpStatus.OK)
+                .build()
+        );
+    }
+
     /**
      * Creates an error response
-     * 
+     *
      * @param status HTTP status code
      * @param message Error message
      * @param error Error type
@@ -80,10 +94,10 @@ public class ResponseBuilder {
                 .build()
         );
     }
-    
+
     /**
      * Creates an error response with details
-     * 
+     *
      * @param status HTTP status code
      * @param message Error message
      * @param error Error type
@@ -100,28 +114,27 @@ public class ResponseBuilder {
                 .build()
         );
     }
-    
+
     /**
-     * Creates a 'created' response with data and links
-     * 
+     * Creates a 'created' response with data only (no additional links)
+     * Used when the data model already contains links
+     *
      * @param <T> Type of the data
      * @param data The data to include in the response
-     * @param links HATEOAS links to include
      * @return ResponseEntity with ApiResponse
      */
-    public static <T> ResponseEntity<ApiResponse<T>> created(T data, Link... links) {
+    public static <T> ResponseEntity<ApiResponse<T>> created(T data) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
             ApiResponse.<T>builder()
                 .data(data)
                 .status(HttpStatus.CREATED)
-                .links(links)
                 .build()
         );
     }
-    
+
     /**
      * Creates a 'no content' response
-     * 
+     *
      * @return ResponseEntity with no content
      */
     public static ResponseEntity<Void> noContent() {

@@ -1,13 +1,9 @@
 package com.fabiornt.rest_template.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +18,7 @@ import com.fabiornt.rest_template.domain.entity.User;
 import com.fabiornt.rest_template.exception.ResourceNotFoundException;
 import com.fabiornt.rest_template.http.ApiResponse;
 import com.fabiornt.rest_template.http.ApiResponseCollection;
+import com.fabiornt.rest_template.http.LinkBuilder;
 import com.fabiornt.rest_template.http.ResponseBuilder;
 import com.fabiornt.rest_template.domain.model.UserModel;
 import com.fabiornt.rest_template.domain.model.UserModelAssembler;
@@ -47,10 +44,8 @@ public class UserController {
         User createdUser = userService.createUser(user);
         UserModel userModel = userModelAssembler.toModel(createdUser);
 
-        Link selfLink = linkTo(methodOn(UserController.class).getUserById(createdUser.getId())).withSelfRel();
-        Link usersLink = linkTo(methodOn(UserController.class).getAllUsers()).withRel("users");
-
-        return ResponseBuilder.created(userModel, selfLink, usersLink);
+        // UserModel already has links from UserModelAssembler
+        return ResponseBuilder.created(userModel);
     }
 
     @GetMapping
@@ -60,9 +55,9 @@ public class UserController {
                 .map(userModelAssembler::toModel)
                 .collect(Collectors.toList());
 
-        Link selfLink = linkTo(methodOn(UserController.class).getAllUsers()).withSelfRel();
-
-        return ResponseBuilder.collection(userModels, selfLink);
+        // Each UserModel already has links from UserModelAssembler
+        // For collection-level links, we use the LinkBuilder.forUsers() in the ApiResponseCollection
+        return ResponseBuilder.collection(userModels, LinkBuilder.forUsers());
     }
 
     @GetMapping("/{id}")
@@ -71,10 +66,8 @@ public class UserController {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
 
         UserModel userModel = userModelAssembler.toModel(user);
-        Link selfLink = linkTo(methodOn(UserController.class).getUserById(id)).withSelfRel();
-        Link usersLink = linkTo(methodOn(UserController.class).getAllUsers()).withRel("users");
-
-        return ResponseBuilder.success(userModel, selfLink, usersLink);
+        // UserModel already has links from UserModelAssembler
+        return ResponseBuilder.success(userModel);
     }
 
     @PutMapping("/{id}")
@@ -85,10 +78,8 @@ public class UserController {
         User updatedUser = userService.updateUser(id, userDetails);
         UserModel userModel = userModelAssembler.toModel(updatedUser);
 
-        Link selfLink = linkTo(methodOn(UserController.class).getUserById(id)).withSelfRel();
-        Link usersLink = linkTo(methodOn(UserController.class).getAllUsers()).withRel("users");
-
-        return ResponseBuilder.success(userModel, selfLink, usersLink);
+        // UserModel already has links from UserModelAssembler
+        return ResponseBuilder.success(userModel);
     }
 
     @DeleteMapping("/{id}")
