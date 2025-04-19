@@ -2,6 +2,7 @@ package com.fabiornt.rest_template.http;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,6 +75,36 @@ public class ResponseBuilder {
                 .data(data)
                 .status(HttpStatus.OK)
                 .build()
+        );
+    }
+
+    /**
+     * Creates a paginated response with data and links
+     *
+     * @param <T> Type of the data
+     * @param page The Spring Data Page
+     * @param data The collection of data to include in the response
+     * @param links HATEOAS links to include
+     * @return ResponseEntity with PagedApiResponseCollection
+     */
+    public static <T> ResponseEntity<PagedApiResponseCollection<T>> pagedCollection(Page<?> page, List<T> data, Link... links) {
+        return ResponseEntity.ok(
+            PagedApiResponseCollection.fromPage(page, data, links, HttpStatus.OK)
+        );
+    }
+
+    /**
+     * Creates a paginated response with data only (no additional links)
+     * Used when the data models already contain links
+     *
+     * @param <T> Type of the data
+     * @param page The Spring Data Page
+     * @param data The collection of data to include in the response
+     * @return ResponseEntity with PagedApiResponseCollection
+     */
+    public static <T> ResponseEntity<PagedApiResponseCollection<T>> pagedCollection(Page<?> page, List<T> data) {
+        return ResponseEntity.ok(
+            PagedApiResponseCollection.fromPage(page, data, new Link[0], HttpStatus.OK)
         );
     }
 

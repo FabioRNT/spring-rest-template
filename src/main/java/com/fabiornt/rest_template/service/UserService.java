@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fabiornt.rest_template.domain.entity.User;
@@ -32,8 +34,23 @@ public class UserService
         return userRepository.save(user);
     }
 
+    /**
+     * Get all users without pagination
+     *
+     * @return List of all users
+     */
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    /**
+     * Get users with pagination
+     *
+     * @param pageable Pagination information
+     * @return Page of users
+     */
+    public Page<User> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     public Optional<User> getUserById(Long id) {

@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fabiornt.rest_template.domain.entity.User;
@@ -53,16 +58,28 @@ public class UserController {
     }
 
     /**
-     * Get all users with content negotiation support.
+     * Get all users with pagination and content negotiation support.
      * Supports both JSON and CSV formats based on the Accept header.
      *
+     * @param page Page number (0-based)
+     * @param size Page size
      * @param acceptHeader The Accept header from the request
      * @return Response with users in the requested format
      */
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv"})
-    public ResponseEntity<?> getAllUsers(@RequestHeader(value = HttpHeaders.ACCEPT, required = false) String acceptHeader) {
-        List<User> users = userService.getAllUsers();
-        List<UserModel> userModels = users.stream()
+    public ResponseEntity<?> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestHeader(value = HttpHeaders.ACCEPT, required = false) String acceptHeader) {
+
+        // Create pageable request with sorting
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+
+        // Get paginated users
+        Page<User> userPage = userService.getAllUsers(pageable);
+
+        // Convert to UserModel
+        List<UserModel> userModels = userPage.getContent().stream()
                 .map(userModelAssembler::toModel)
                 .collect(Collectors.toList());
 
@@ -75,10 +92,10 @@ public class UserController {
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=users.csv")
                     .body(csvData);
         } else {
-            // Default to JSON response
+            // Default to JSON response with pagination
             // Each UserModel already has links from UserModelAssembler
-            // For collection-level links, we use the LinkBuilder.forUsers() in the ApiResponseCollection
-            return ResponseBuilder.collection(userModels, LinkBuilder.forUsers());
+            // For collection-level links, we use the LinkBuilder.forPaginatedUsers()
+            return ResponseBuilder.pagedCollection(userPage, userModels, LinkBuilder.forPaginatedUsers(page, size, userPage));
         }
     }
 

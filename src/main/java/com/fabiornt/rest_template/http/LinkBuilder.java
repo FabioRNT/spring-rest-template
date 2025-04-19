@@ -3,6 +3,7 @@ package com.fabiornt.rest_template.http;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import org.springframework.data.domain.Page;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.LinkRelation;
 
@@ -23,7 +24,7 @@ public class LinkBuilder {
     public static Link[] forUser(Long userId) {
         return new Link[] {
             linkTo(methodOn(UserController.class).getUserById(userId)).withSelfRel(),
-            linkTo(methodOn(UserController.class).getAllUsers("application/json")).withRel("users"),
+            linkTo(methodOn(UserController.class).getAllUsers(0, 10, "application/json")).withRel("users"),
         };
     }
 
@@ -34,7 +35,7 @@ public class LinkBuilder {
      */
     public static Link[] forUsers() {
         return new Link[] {
-            linkTo(methodOn(UserController.class).getAllUsers("application/json")).withSelfRel(),
+            linkTo(methodOn(UserController.class).getAllUsers(0, 10, "application/json")).withSelfRel(),
             linkTo(methodOn(UserController.class).createUser(null)).withRel("create")
         };
     }
@@ -66,5 +67,39 @@ public class LinkBuilder {
      */
     public static Link custom(String href, String rel) {
         return Link.of(href, LinkRelation.of(rel));
+    }
+
+    /**
+     * Creates pagination links for a paginated collection of users
+     *
+     * @param page The Spring Data Page
+     * @param size The page size
+     * @return Array of pagination links
+     */
+    public static Link[] forPaginatedUsers(int page, int size, Page<?> pageData) {
+        // Base links
+        Link selfLink = linkTo(methodOn(UserController.class).getAllUsers(page, size, null)).withSelfRel();
+        Link createLink = linkTo(methodOn(UserController.class).createUser(null)).withRel("create");
+
+        // Pagination links
+        Link firstLink = linkTo(methodOn(UserController.class).getAllUsers(0, size, null)).withRel("first");
+        Link lastLink = linkTo(methodOn(UserController.class).getAllUsers(pageData.getTotalPages() - 1, size, null)).withRel("last");
+
+        // Add next and previous links if applicable
+        if (pageData.hasNext()) {
+            Link nextLink = linkTo(methodOn(UserController.class).getAllUsers(page + 1, size, null)).withRel("next");
+            if (pageData.hasPrevious()) {
+                Link prevLink = linkTo(methodOn(UserController.class).getAllUsers(page - 1, size, null)).withRel("prev");
+                return new Link[] { selfLink, firstLink, prevLink, nextLink, lastLink, createLink };
+            } else {
+                return new Link[] { selfLink, firstLink, nextLink, lastLink, createLink };
+            }
+        } else if (pageData.hasPrevious()) {
+            Link prevLink = linkTo(methodOn(UserController.class).getAllUsers(page - 1, size, null)).withRel("prev");
+            return new Link[] { selfLink, firstLink, prevLink, lastLink, createLink };
+        } else {
+            // Only one page
+            return new Link[] { selfLink, createLink };
+        }
     }
 }

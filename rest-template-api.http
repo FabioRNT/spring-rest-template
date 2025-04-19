@@ -27,6 +27,18 @@ Accept: application/json
 GET {{baseUrl}}/api/users
 Accept: text/csv
 
+### Get paginated users (page 0, size 5)
+GET {{baseUrl}}/api/users?page=0&size=5
+Accept: application/json
+
+### Get paginated users (page 1, size 5)
+GET {{baseUrl}}/api/users?page=1&size=5
+Accept: application/json
+
+### Get paginated users (CSV format)
+GET {{baseUrl}}/api/users?page=0&size=5
+Accept: text/csv
+
 ### Get user by ID
 GET {{baseUrl}}/api/users/2
 Accept: {{contentType}}
@@ -37,7 +49,7 @@ Content-Type: {{contentType}}
 
 {
   "username": "johndoe",
-  "email": "john.doe@example.com",
+  "email": "jo234321hn.doe@example.com",
   "password": "securepassword123"
 }
 
