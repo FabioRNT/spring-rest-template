@@ -4,6 +4,20 @@
 
 @baseUrl = http://localhost:8080
 @contentType = application/json
+@corsOrigin = http://example.com
+
+### Test CORS Preflight Request
+### This simulates a browser's preflight OPTIONS request to check CORS permissions
+OPTIONS {{baseUrl}}/api/users
+Origin: {{corsOrigin}}
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type, Authorization
+
+### Test CORS Cross-Origin Request
+### This simulates a request from a different origin
+GET {{baseUrl}}/api/users
+Origin: {{corsOrigin}}
+Accept: {{contentType}}
 
 ### Get all users
 GET {{baseUrl}}/api/users
