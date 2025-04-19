@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,17 +15,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fabiornt.rest_template.domain.entity.User;
 import com.fabiornt.rest_template.exception.ResourceNotFoundException;
 import com.fabiornt.rest_template.http.ApiResponse;
-import com.fabiornt.rest_template.http.ApiResponseCollection;
 import com.fabiornt.rest_template.http.LinkBuilder;
 import com.fabiornt.rest_template.http.ResponseBuilder;
 import com.fabiornt.rest_template.domain.model.UserModel;
 import com.fabiornt.rest_template.domain.model.UserModelAssembler;
 import com.fabiornt.rest_template.service.UserService;
+import com.fabiornt.rest_template.util.CsvConverter;
 
 import jakarta.validation.Valid;
 
@@ -49,16 +52,34 @@ public class UserController {
         return ResponseBuilder.created(userModel);
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponseCollection<UserModel>> getAllUsers() {
+    /**
+     * Get all users with content negotiation support.
+     * Supports both JSON and CSV formats based on the Accept header.
+     *
+     * @param acceptHeader The Accept header from the request
+     * @return Response with users in the requested format
+     */
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv"})
+    public ResponseEntity<?> getAllUsers(@RequestHeader(value = HttpHeaders.ACCEPT, required = false) String acceptHeader) {
         List<User> users = userService.getAllUsers();
         List<UserModel> userModels = users.stream()
                 .map(userModelAssembler::toModel)
                 .collect(Collectors.toList());
 
-        // Each UserModel already has links from UserModelAssembler
-        // For collection-level links, we use the LinkBuilder.forUsers() in the ApiResponseCollection
-        return ResponseBuilder.collection(userModels, LinkBuilder.forUsers());
+        // Check if the client accepts CSV
+        if (acceptHeader != null && acceptHeader.contains("text/csv")) {
+            // Convert to CSV and return with appropriate headers
+            String csvData = CsvConverter.toCsv(userModels);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("text/csv"))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=users.csv")
+                    .body(csvData);
+        } else {
+            // Default to JSON response
+            // Each UserModel already has links from UserModelAssembler
+            // For collection-level links, we use the LinkBuilder.forUsers() in the ApiResponseCollection
+            return ResponseBuilder.collection(userModels, LinkBuilder.forUsers());
+        }
     }
 
     @GetMapping("/{id}")

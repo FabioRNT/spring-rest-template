@@ -19,9 +19,13 @@ GET {{baseUrl}}/api/users
 Origin: {{corsOrigin}}
 Accept: {{contentType}}
 
-### Get all users
+### Get all users (JSON format)
 GET {{baseUrl}}/api/users
-Accept: {{contentType}}
+Accept: application/json
+
+### Get all users (CSV format)
+GET {{baseUrl}}/api/users
+Accept: text/csv
 
 ### Get user by ID
 GET {{baseUrl}}/api/users/2

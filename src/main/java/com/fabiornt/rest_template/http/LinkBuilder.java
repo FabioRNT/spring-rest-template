@@ -23,7 +23,7 @@ public class LinkBuilder {
     public static Link[] forUser(Long userId) {
         return new Link[] {
             linkTo(methodOn(UserController.class).getUserById(userId)).withSelfRel(),
-            linkTo(methodOn(UserController.class).getAllUsers()).withRel("users"),
+            linkTo(methodOn(UserController.class).getAllUsers("application/json")).withRel("users"),
         };
     }
 
@@ -34,7 +34,7 @@ public class LinkBuilder {
      */
     public static Link[] forUsers() {
         return new Link[] {
-            linkTo(methodOn(UserController.class).getAllUsers()).withSelfRel(),
+            linkTo(methodOn(UserController.class).getAllUsers("application/json")).withSelfRel(),
             linkTo(methodOn(UserController.class).createUser(null)).withRel("create")
         };
     }
