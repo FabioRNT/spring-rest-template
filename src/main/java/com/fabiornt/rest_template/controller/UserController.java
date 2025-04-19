@@ -23,8 +23,8 @@ import com.fabiornt.rest_template.exception.ResourceNotFoundException;
 import com.fabiornt.rest_template.http.ApiResponse;
 import com.fabiornt.rest_template.http.ApiResponseCollection;
 import com.fabiornt.rest_template.http.ResponseBuilder;
-import com.fabiornt.rest_template.model.UserModel;
-import com.fabiornt.rest_template.model.UserModelAssembler;
+import com.fabiornt.rest_template.domain.model.UserModel;
+import com.fabiornt.rest_template.domain.model.UserModelAssembler;
 import com.fabiornt.rest_template.service.UserService;
 
 import jakarta.validation.Valid;

@@ -1,4 +1,4 @@
-package com.fabiornt.rest_template.model;
+package com.fabiornt.rest_template.domain.model;
 
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;

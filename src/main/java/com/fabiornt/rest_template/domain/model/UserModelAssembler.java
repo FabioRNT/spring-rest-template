@@ -1,4 +1,4 @@
-package com.fabiornt.rest_template.model;
+package com.fabiornt.rest_template.domain.model;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
