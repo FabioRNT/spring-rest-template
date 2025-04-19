@@ -59,6 +59,44 @@ public class UserService
     }
 
     public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+        // Check if user exists before deletion
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+
+        userRepository.delete(user);
+    }
+
+    /**
+     * Partially update a user with the provided fields
+     *
+     * @param id The user ID
+     * @param userPatch The user object with fields to update
+     * @return The updated user
+     */
+    public User patchUser(Long id, User userPatch) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+
+        // Only update fields that are not null
+        if (userPatch.getUsername() != null) {
+            user.setUsername(userPatch.getUsername());
+        }
+
+        if (userPatch.getEmail() != null) {
+            // Check if email is being changed and if it already exists
+            if (!user.getEmail().equals(userPatch.getEmail())) {
+                userRepository.findByEmail(userPatch.getEmail())
+                    .ifPresent(existingUser -> {
+                        throw new EmailAlreadyExistsException(userPatch.getEmail());
+                    });
+            }
+            user.setEmail(userPatch.getEmail());
+        }
+
+        if (userPatch.getPassword() != null) {
+            user.setPassword(userPatch.getPassword());
+        }
+
+        return userRepository.save(user);
     }
 }

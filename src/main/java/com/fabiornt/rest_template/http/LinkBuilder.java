@@ -16,7 +16,7 @@ public class LinkBuilder {
 
     /**
      * Creates standard links for a user resource
-     * 
+     *
      * @param userId The user ID
      * @return Array of links for the user resource
      */
@@ -26,10 +26,10 @@ public class LinkBuilder {
             linkTo(methodOn(UserController.class).getAllUsers()).withRel("users"),
         };
     }
-    
+
     /**
      * Creates standard links for the users collection
-     * 
+     *
      * @return Array of links for the users collection
      */
     public static Link[] forUsers() {
@@ -38,28 +38,28 @@ public class LinkBuilder {
             linkTo(methodOn(UserController.class).createUser(null)).withRel("create")
         };
     }
-    
+
     /**
      * Creates a documentation link for the API
-     * 
+     *
      * @return Link to API documentation
      */
     public static Link docs() {
         return Link.of("/api/docs").withRel("documentation");
     }
-    
+
     /**
      * Creates a link to the API root
-     * 
+     *
      * @return Link to API root
      */
     public static Link root() {
         return Link.of("/api").withRel("api");
     }
-    
+
     /**
      * Creates a custom link with the given href and relation
-     * 
+     *
      * @param href The link URL
      * @param rel The link relation
      * @return Custom link

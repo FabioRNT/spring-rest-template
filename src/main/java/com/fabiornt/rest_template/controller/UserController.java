@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -86,5 +87,24 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseBuilder.noContent();
+    }
+
+    /**
+     * Partially update a user with the provided fields
+     *
+     * @param id The user ID
+     * @param userPatch The user object with fields to update
+     * @return The updated user
+     */
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse<UserModel>> patchUser(
+            @PathVariable Long id,
+            @RequestBody User userPatch) {
+
+        User patchedUser = userService.patchUser(id, userPatch);
+        UserModel userModel = userModelAssembler.toModel(patchedUser);
+
+        // UserModel already has links from UserModelAssembler
+        return ResponseBuilder.success(userModel);
     }
 }

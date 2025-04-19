@@ -79,3 +79,32 @@ Content-Type: {{contentType}}
   "email": "john.doe@example.com",
   "password": "updatedpassword123"
 }
+
+### Partially update a user (PATCH)
+### This only updates the specified fields
+PATCH {{baseUrl}}/api/users/2
+Content-Type: {{contentType}}
+
+{
+  "username": "patched_username"
+}
+
+### Test validation error - This should return a 422 Unprocessable Entity
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "username": "a",
+  "email": "invalid-email",
+  "password": "123"
+}
+
+### Test malformed JSON - This should return a 422 Unprocessable Entity
+POST {{baseUrl}}/api/users
+Content-Type: {{contentType}}
+
+{
+  "username": "testuser",
+  "email": "test.user@example.com",
+  "password": "testpassword123",
+}
