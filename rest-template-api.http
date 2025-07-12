@@ -5,6 +5,33 @@
 @baseUrl = http://localhost:8080
 @contentType = application/json
 @corsOrigin = http://example.com
+@authToken = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwiaXNzIjoicmVzdC10ZW1wbGF0ZS1hcGkiLCJhdWQiOiJyZXN0LXRlbXBsYXRlLXVzZXJzIiwiaWF0IjoxNzUyMzQyMjM4LCJleHAiOjE3NTI0Mjg2MzgsInVzZXJuYW1lIjoiZmFiaW8iLCJyb2xlcyI6IlJPTEVfVVNFUiJ9.KcW8ttzMql501D8TiSWDTMdKyXHrKPHXwhla5aj2Vc5u5diajDrrUAWr4ICXfC-jiErTKUl4ZfrfSYDxw6zz3Q
+
+### Authentication Endpoints ###
+
+### Register a new user
+POST {{baseUrl}}/api/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "fabio",
+  "email": "fabio@example.com",
+  "password": "fabio123"
+}
+
+### Login with username/email and password
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "username": "fabio",
+  "password": "fabio123"
+}
+
+### Example of authenticated request
+GET {{baseUrl}}/api/users
+Authorization: Bearer {{authToken}}
+Accept: {{contentType}}
 
 ### Test CORS Preflight Request
 ### This simulates a browser's preflight OPTIONS request to check CORS permissions
@@ -12,40 +39,49 @@ OPTIONS {{baseUrl}}/api/users
 Origin: {{corsOrigin}}
 Access-Control-Request-Method: POST
 Access-Control-Request-Headers: Content-Type, Authorization
+Authorization: Bearer {{authToken}}
 
 ### Test CORS Cross-Origin Request
 ### This simulates a request from a different origin
 GET {{baseUrl}}/api/users
 Origin: {{corsOrigin}}
 Accept: {{contentType}}
+Authorization: Bearer {{authToken}}
 
 ### Get all users (JSON format)
 GET {{baseUrl}}/api/users
 Accept: application/json
+Authorization: Bearer {{authToken}}
 
 ### Get all users (CSV format)
 GET {{baseUrl}}/api/users
 Accept: text/csv
+Authorization: Bearer {{authToken}}
 
 ### Get paginated users (page 0, size 5)
 GET {{baseUrl}}/api/users?page=0&size=5
 Accept: application/json
+Authorization: Bearer {{authToken}}
 
 ### Get paginated users (page 1, size 5)
 GET {{baseUrl}}/api/users?page=1&size=5
 Accept: application/json
+Authorization: Bearer {{authToken}}
 
 ### Get paginated users (CSV format)
 GET {{baseUrl}}/api/users?page=0&size=5
 Accept: text/csv
+Authorization: Bearer {{authToken}}
 
 ### Get user by ID
 GET {{baseUrl}}/api/users/2
 Accept: {{contentType}}
+Authorization: Bearer {{authToken}}
 
 ### Create a new user
 POST {{baseUrl}}/api/users
 Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
 
 {
   "username": "johndoe",

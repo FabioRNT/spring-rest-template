@@ -26,6 +26,15 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    public ResponseEntity<ApiErrorResponse> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException ex) {
+        return ResponseBuilder.error(
+            HttpStatus.CONFLICT,
+            ex.getMessage(),
+            "Username already exists"
+        );
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
         return ResponseBuilder.error(

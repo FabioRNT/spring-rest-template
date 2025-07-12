@@ -9,6 +9,8 @@ A level 3 maturity model REST API template for user management, following the Ri
 - **Pagination**: Efficient handling of large datasets with pagination
 - **Proper HTTP Status Codes**: Following REST best practices
 - **Comprehensive Error Handling**: Detailed error responses with appropriate status codes
+- **JWT Authentication**: Secure authentication with JSON Web Tokens
+- **Role-Based Access Control**: Fine-grained authorization with user roles
 - **Swagger Documentation**: Interactive API documentation
 - **Docker Support**: Easy deployment with Docker Compose
 
@@ -98,6 +100,11 @@ To use it:
 
 ## API Endpoints
 
+### Authentication
+
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Authenticate and get JWT token
+
 ### User Management
 
 - `GET /api/users` - Get all users (supports pagination and content negotiation)
@@ -144,6 +151,67 @@ The API provides detailed error responses with appropriate HTTP status codes:
 - `409 Conflict` - Resource conflict (e.g., duplicate email)
 - `422 Unprocessable Entity` - Validation errors
 - `500 Internal Server Error` - Server-side errors
+
+## Authentication and Authorization
+
+The API uses JWT (JSON Web Token) for authentication and authorization. This provides a stateless, secure way to authenticate users and protect API endpoints.
+
+### Registration and Login
+
+To use the API, you first need to register a user:
+
+```
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "username": "newuser",
+  "email": "newuser@example.com",
+  "password": "password123"
+}
+```
+
+After registration, you can login to get a JWT token:
+
+```
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "username": "newuser",
+  "password": "password123"
+}
+```
+
+The response will include a JWT token:
+
+```json
+{
+  "data": {
+    "token": "eyJhbGciOiJIUzUxMiJ9...",
+    "expiresAt": 1626345678000,
+    "username": "newuser",
+    "tokenType": "Bearer"
+  },
+  "status": "OK",
+  "timestamp": "2023-07-12T12:34:56.789"
+}
+```
+
+### Using the JWT Token
+
+To access protected endpoints, include the JWT token in the Authorization header:
+
+```
+GET /api/users
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9...
+```
+
+### Role-Based Access Control
+
+The API supports role-based access control with two roles:
+- `ROLE_USER`: Basic user role, assigned by default to all registered users
+- `ROLE_ADMIN`: Administrative role with additional privileges
 
 ## CORS Support
 
