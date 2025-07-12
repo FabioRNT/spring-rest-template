@@ -5,7 +5,7 @@
 @baseUrl = http://localhost:8080
 @contentType = application/json
 @corsOrigin = http://example.com
-@authToken = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwiaXNzIjoicmVzdC10ZW1wbGF0ZS1hcGkiLCJhdWQiOiJyZXN0LXRlbXBsYXRlLXVzZXJzIiwiaWF0IjoxNzUyMzQyMjM4LCJleHAiOjE3NTI0Mjg2MzgsInVzZXJuYW1lIjoiZmFiaW8iLCJyb2xlcyI6IlJPTEVfVVNFUiJ9.KcW8ttzMql501D8TiSWDTMdKyXHrKPHXwhla5aj2Vc5u5diajDrrUAWr4ICXfC-jiErTKUl4ZfrfSYDxw6zz3Q
+@authToken = ...
 
 ### Authentication Endpoints ###
 
